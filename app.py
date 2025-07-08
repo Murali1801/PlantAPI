@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 import numpy as np
 from tensorflow.keras.models import load_model
 from PIL import Image
 
 app = Flask(__name__)
+CORS(app, origins=["https://agri-scan-ai.vercel.app", "http://localhost", "http://localhost:3000", "http://127.0.0.1", "http://127.0.0.1:3000"])
 
 MODEL_FOLDER = 'model'
 MODEL_FILES = {
