@@ -1,6 +1,5 @@
+flask
+gunicorn
 tensorflow
-numpy
-pillow 
-django
-djangorestframework 
-gunicorn 
+pillow
+numpy 
