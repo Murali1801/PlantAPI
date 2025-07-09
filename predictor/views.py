@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
 import os
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -72,10 +75,20 @@ def load_and_preprocess_image_file(file, input_size):
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PredictView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
+        # Add CORS headers
+        response = Response()
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        
+        if request.method == "OPTIONS":
+            return response
+            
         model_name = request.data.get('model', '').lower()
         image_file = request.data.get('image', None)
         if not model_name or not image_file:
